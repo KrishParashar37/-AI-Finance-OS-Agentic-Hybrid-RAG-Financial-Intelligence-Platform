@@ -13,6 +13,7 @@ export const pool =
     user: process.env.DB_USER ?? "root",
     password: process.env.DB_PASSWORD ?? "",
     database: process.env.DB_NAME ?? "ai_finance_db",
+    ssl: process.env.DB_HOST?.includes("tidbcloud") ? { rejectUnauthorized: true } : undefined,
   });
 
 if (process.env.NODE_ENV !== "production") {
