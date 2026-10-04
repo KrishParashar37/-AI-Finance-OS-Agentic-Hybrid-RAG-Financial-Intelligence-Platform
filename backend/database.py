@@ -29,6 +29,12 @@ DATABASE_URL = URL.create(
     query={"charset": "utf8mb4"},
 )
 
+connect_args = {}
+if "tidbcloud.com" in DB_HOST:
+    import ssl
+    ssl_context = ssl.create_default_context()
+    connect_args["ssl"] = ssl_context
+
 engine = create_async_engine(
     DATABASE_URL,
     echo=False,
@@ -36,6 +42,7 @@ engine = create_async_engine(
     pool_recycle=3600,
     pool_size=10,
     max_overflow=20,
+    connect_args=connect_args,
 )
 
 AsyncSessionLocal = async_sessionmaker(
