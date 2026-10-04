@@ -90,9 +90,10 @@ export const POST = route(async (req: NextRequest) => {
       const buf = Buffer.from(await file.arrayBuffer());
       previewUrl = `data:${file.type};base64,${buf.toString("base64")}`;
     }
+    const formattedDate = new Date(x.date.getTime() - x.date.getTimezoneOffset() * 60000).toISOString().slice(0, 19).replace('T', ' ');
     const [row] = await db
       .insert(scans)
-      .values({ fileName: file.name, fileSize: file.size, kind, merchant: x.mer.m, date: x.date, total: x.total, tax: x.tax, category: x.mer.c, paymentMethod: x.mer.pay, confidence: x.confidence, items: x.items, previewUrl })
+      .values({ fileName: file.name, fileSize: file.size, kind, merchant: x.mer.m, date: formattedDate as any, total: x.total, tax: x.tax, category: x.mer.c, paymentMethod: x.mer.pay, confidence: x.confidence, items: x.items, previewUrl })
       .$returningId();
     out.push({ ...row, fileName: file.name, fileSize: file.size, kind, merchant: x.mer.m, date: x.date, total: x.total, tax: x.tax, category: x.mer.c, paymentMethod: x.mer.pay, confidence: x.confidence, items: x.items, status: "processed", previewUrl, invoiceNumber: x.invoiceNumber });
   }
